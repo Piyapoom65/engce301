@@ -10,11 +10,15 @@ const win_height = 210;
 class WindowManager {
     constructor() {
         //super(props)
-        this.state = { isReady: false }
+        this.state = { isReady: false };
+        console.log("WindowManager initialized, isReady:", this.state.isReady);
 
         //Iconpaht different in Build
-        imgPath = helper.isDev() ? './assets/agent_notification.png' : path.join(__dirname, '../assets/agent_notification.png');
+        imgPath = path.join(app.getAppPath(), 'assets', 'agent_notification.png');
+        console.log("Corrected Tray icon path:", imgPath); // ตรวจสอบพาธใหม่
         this.icon = nativeImage.createFromPath(imgPath);
+        console.log("Icon is empty:", this.icon.isEmpty()); // ตรวจสอบว่าโหลดรูปภาพสำเร็จหรือไม่
+        
 
     }
 
@@ -40,12 +44,18 @@ class WindowManager {
 
     //Creates a Tray and a Windows
     createUI() {
-        if (process.platform == "darwin")
+        console.log("createUI() called");
+        this.state.isReady = true; // ✅ เปลี่ยนค่าเป็น true เมื่อ UI ถูกสร้าง
+        console.log("isReady updated to:", this.state.isReady);
+
+        if (process.platform === "darwin") {
             app.dock.hide();
+        }
         this.createTray();
         this.createMainWindow();
         this.createIPC();
     }
+    
 
     closeApp() {
         if (app.showExitPrompt) {
@@ -65,28 +75,30 @@ class WindowManager {
     }
 
     createTray() {
-        this.tray = new Tray(this.icon);
-        this.tray.getTitle('Agent Notification')
-
-        this.tray.on('double-click', this.toggleWindowMain.bind(this));
-
+        console.log("Creating Tray...");
+    
+        // กำหนดพาธให้ตรงกับตำแหน่งที่ไฟล์อยู่จริง
+        const iconFile = process.platform === "win32" ? "agent_notification.ico" : "agent_notification.png";
+        const iconPath = path.join(__dirname, "..", "assets", iconFile);
+        console.log("Corrected Static Tray icon path:", iconPath);
+        
+        this.tray = new Tray(iconPath);
+        
+        this.tray = new Tray(iconPath);
+        console.log("Tray Object:", this.tray);
+    
+        this.tray.setToolTip("Agent Notification Running...");
+    
         const contextMenu = Menu.buildFromTemplate([
-            { label: AppNameVersion, enabled: false },
-            { type: 'separator' },
-            { label: 'Configuration', click: () => { this.showWindow() } },
-            // { label: 'Agent Code', click: () => { this.showWindow() } },
-            //{ label: 'close', click: () => { this.hideWindow() }},
-            { type: 'separator' },
-            // { label: 'x86 Chrome', type: 'radio' },
-            { label: 'Exit', click: () => { this.exitWindow() } }
-        ])
-
-        this.tray.setToolTip(AppNameVersion);
-        this.tray.setContextMenu(contextMenu)
-
-        if (process.platform == "darwin")
-            this.tray.setIgnoreDoubleClickEvents(true); //Better UX on MacOS
+            { label: "Open", click: () => { this.showWindow(); } },
+            { label: "Exit", click: () => { this.exitWindow(); } }
+        ]);
+    
+        this.tray.setContextMenu(contextMenu);
+        console.log("Tray Created Successfully!");
     }
+    
+    
 
     createMainWindow() {
         this.win = new BrowserWindow({
