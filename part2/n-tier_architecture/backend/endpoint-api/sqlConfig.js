@@ -1,6 +1,6 @@
 var dbconfig = {
     development: {
-        server: '192.168.1.115',
+        server: '192.168.56.105',
         database:'team5_engce301_db',
         user:'team5',
         password:'P@ssw0rd',
@@ -11,7 +11,7 @@ var dbconfig = {
             enableArithAbort: true,
             trustServerCertificate: true,
             trustedconnection:  true,
-            instancename:  '192.168.1.115'  // SQL Server instance name
+            instancename:  '192.168.56.105'  // SQL Server instance name
         }
     },
     production: {

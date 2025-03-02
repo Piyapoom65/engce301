@@ -13,10 +13,10 @@
   "license": "MIT",
   "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
   "scripts": {
+    "start": "electron . --disable-gpu --disable-software-rasterizer --no-sandbox",
     "build": "vite build",
     "lint": "eslint \"src/**/*.js\"",
-    "serve": "vite preview",
-    "start": "vite"
+    "serve": "vite preview"
   },
   "dependencies": {
     "@coreui/chartjs": "^4.0.0",
@@ -41,6 +41,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.19",
+    "electron": "^34.3.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
